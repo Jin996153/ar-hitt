@@ -25,6 +25,7 @@
 
 			import * as THREE from 'three';
 			import { ARButton } from 'three/addons/webxr/ARButton.js';
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 			let container;
 			let camera, scene, renderer;
@@ -34,12 +35,19 @@
 
 			let hitTestSource = null;
 			let hitTestSourceRequested = false;
+			let importedModel;
 
 			init();
 			animate();
 
 			function init() {
-
+                const loader = new GLTFLoader();
+                     loader.load('./floating_fox.glb', (glb) => {
+                     importedModel = glb.scene;
+                    importedModel.scale.set(0.1, 0.1, 0.1); // 调整模型的大小
+                    importedModel.visible = false;
+                    scene.add(importedModel);
+               });
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
@@ -67,31 +75,45 @@
 
 				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
 
+				// function onSelect() {
+
+				// 	if ( reticle.visible ) {
+
+				// 		const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
+				// 		const mesh = new THREE.Mesh( geometry, material );
+				// 		reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
+				// 		mesh.scale.y = Math.random() * 2 + 1;
+				// 		scene.add( mesh );
+
+				// 	}
+
+				// }
 				function onSelect() {
-
-					if ( reticle.visible ) {
-
-						const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
-						const mesh = new THREE.Mesh( geometry, material );
-						reticle.matrix.decompose( mesh.position, mesh.quaternion, mesh.scale );
-						mesh.scale.y = Math.random() * 2 + 1;
-						scene.add( mesh );
-
-					}
-
-				}
+                       if (reticle.visible) {
+                     // 克隆导入的模型，确保每次点击生成一个新的实例
+                             const clonedModel = importedModel.clone();
+        
+                      // 设置模型的位置、旋转等属性
+                              reticle.matrix.decompose(clonedModel.position, clonedModel.quaternion, clonedModel.scale);
+							  // Make the cloned model visible
+                      clonedModel.visible = true;
+        
+                    // 将模型添加到场景中
+                          scene.add(clonedModel);
+                    }
+                         }
 
 				controller = renderer.xr.getController( 0 );
 				controller.addEventListener( 'select', onSelect );
 				scene.add( controller );
 
-				reticle = new THREE.Mesh(
-					new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
-					new THREE.MeshBasicMaterial()
-				);
-				reticle.matrixAutoUpdate = false;
-				reticle.visible = false;
-				scene.add( reticle );
+				// reticle = new THREE.Mesh(
+				// 	new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
+				// 	new THREE.MeshBasicMaterial()
+				// );
+				// reticle.matrixAutoUpdate = false;
+				// reticle.visible = false;
+				// scene.add( reticle );
 
 				//
 
