@@ -42,8 +42,8 @@
 
 			function init() {
                 const loader = new GLTFLoader();
-                     loader.load('./floating_fox.glb', (glb) => {
-                     importedModel = glb.scene;
+                     loader.load('./cloud/scene.gltf', (gltf) => {
+                     importedModel = gltf.scene;
                     importedModel.scale.set(0.1, 0.1, 0.1); // 调整模型的大小
                     importedModel.visible = false;
                     scene.add(importedModel);
@@ -107,15 +107,15 @@
 				controller.addEventListener( 'select', onSelect );
 				scene.add( controller );
 
-				// reticle = new THREE.Mesh(
-				// 	new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
-				// 	new THREE.MeshBasicMaterial()
-				// );
-				// reticle.matrixAutoUpdate = false;
-				// reticle.visible = false;
-				// scene.add( reticle );
+				reticle = new THREE.Mesh(
+					new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
+					new THREE.MeshBasicMaterial()
+				);
+				reticle.matrixAutoUpdate = false;
+				reticle.visible = false;
+				scene.add( reticle );
 
-				//
+				
 
 				window.addEventListener( 'resize', onWindowResize );
 
