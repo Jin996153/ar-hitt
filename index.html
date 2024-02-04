@@ -44,7 +44,7 @@
                 const loader = new GLTFLoader();
                      loader.load('./cloud/scene.gltf', (gltf) => {
                      importedModel = gltf.scene;
-                    importedModel.scale.set(0.1, 0.1, 0.1); // 调整模型的大小
+                    importedModel.scale.set(0.001, 0.001, 0.001); // 调整模型的大小
                     importedModel.visible = false;
                     scene.add(importedModel);
                });
